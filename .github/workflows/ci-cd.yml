@@ -1,0 +1,47 @@
+name: CI/CD
+
+on:
+  # Le workflow est déclenché au push sur la branche de correction
+  push:
+    branches: [dev, master]
+
+  # Pour pouvoir relancer le workflow manuellement
+  workflow_dispatch:
+
+jobs:
+  # Ce workflow a un seul "job", appelé build
+  build:
+    # On choisit un runner Ubuntu sur lequel les étapes de notre workflow vont s'exécuter
+    runs-on: ubuntu-latest
+
+    # Les steps sont les différentes étapes de notre workflow
+    steps:
+      # Récupère les fichiers dans $GITHUB_WORKSPACE, pour que les étapes du job puissent s'effectuer
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # On installe les dépendances
+      - name: NPM install
+        run: npm install
+
+      # Seulement en prod
+
+      - name: Build Docker image
+        if: ${{ github.ref == 'refs/heads/master' }}
+        run: docker build -t ${{ secrets.DOCKERHUB_USER }}/tamago-dev .
+
+      # On se log sur Dockerhub (en utilisant le token stocké dans les Secrets)
+      - name: login DockerHub
+        if: ${{ github.ref == 'refs/heads/master' }}
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_USER }} --password-stdin
+
+      # On pousse notre image sur DockerHub
+      - name: Push DockerHub
+        if: ${{ github.ref == 'refs/heads/master' }}
+        run: docker push ${{ secrets.DOCKERHUB_USER }}/tamago-dev
+
+      # - name: Deploy to Netlify
+      #   env:
+      #     NETLIFY_SITE_ID: "${{ secrets.NETLIFY_SITE_ID}}"
+      #     NETLIFY_AUTH_TOKEN: "${{ secrets.NETLIFY_TOKEN}}"
+      #   run: netlify deploy --dir=public --prod

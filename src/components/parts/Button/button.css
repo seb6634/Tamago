@@ -1,0 +1,21 @@
+.btn {
+    @apply border-2 hover:bg-white font-medium text-white transition-all ease-linear px-8 py-3 rounded-3xl;
+    font-size: 1.1rem;
+}
+
+.btn-sm{
+    padding: 0.4rem 1.5rem;
+    font-size: 1rem;
+}
+
+.btn-blue{
+    @apply hover:text-blue-dark bg-blue-dark border-blue-dark;
+}
+
+.btn-orange{
+    @apply hover:text-orange-dark bg-orange-dark border-orange-dark;
+}
+
+.btn-red{
+    @apply hover:text-red bg-red border-red;
+}

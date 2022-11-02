@@ -1,0 +1,29 @@
+.footer li{
+    position: relative;
+}
+
+.footer li+li:before{
+    content: " - ";
+    position: absolute;
+    left: -12px
+}
+
+
+@media screen and (max-width: 450px){
+    .footer ul{
+        flex-direction: column;     
+    }
+
+    .footer li:nth-child(2) {
+        margin: 0;
+        margin-bottom: 0.6rem;
+    }
+
+    .footer li+li:before{
+        content: none;
+    }
+    .footer li{
+        margin-bottom: 0.6rem;
+    }
+
+}
